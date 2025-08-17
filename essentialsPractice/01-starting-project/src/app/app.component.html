@@ -1,0 +1,5 @@
+<app-header />
+<app-user-input (userData)="calculateInvestment($event)" />
+@if (annualDataCalculated && annualDataCalculated.length > 0) {
+  <app-investment-results [annualData]="annualDataCalculated" />
+}
