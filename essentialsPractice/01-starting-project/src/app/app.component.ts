@@ -1,10 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, signal, Signal } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { UserInputComponent } from './user-input/user-input.component';
 import { InvestmentResultsComponent } from './investment-results/investment-results.component';
 import { AnnualData } from './annual-data.model';
 import { InvestmentService } from './investment.service';
-import { UserInvestment } from './user-input/user-investment.model';
+import type { UserInvestmentInput } from './user-investment-input.model';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +13,12 @@ import { UserInvestment } from './user-input/user-investment.model';
   imports: [HeaderComponent, UserInputComponent, InvestmentResultsComponent],
 })
 export class AppComponent {
-  @Input({ required: true }) userData!: UserInvestment;
-  annualDataCalculated: AnnualData[] = [];
+  @Input({ required: true }) userData!: UserInvestmentInput;
+  annualDataCalculated= signal<AnnualData[]>([]);
 
-  calculateInvestment(userData: UserInvestment): AnnualData[] {
+  calculateInvestment(userData: UserInvestmentInput) {
     let investmentValue = userData.initialInvestment;
+    const annualDataCalculated: AnnualData[] = [];
 
     for (let i = 0; i < userData.duration; i++) {
       const year = i + 1;
@@ -28,7 +29,7 @@ export class AppComponent {
         investmentValue -
         userData.annualInvestment * year -
         userData.initialInvestment;
-      this.annualDataCalculated.push({
+      annualDataCalculated.push({
         year: year,
         interest: interestEarnedInYear,
         valueEndOfYear: investmentValue,
@@ -38,7 +39,7 @@ export class AppComponent {
           userData.initialInvestment + userData.annualInvestment * year,
       });
     }
-    return this.annualDataCalculated;
+    this.annualDataCalculated.set(annualDataCalculated);
   }
 
   // @Input() annualDataCalculated: AnnualData[] = [];

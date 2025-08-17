@@ -14,9 +14,7 @@ export class InvestmentResultsComponent {
 
   @Input() annualData: AnnualData[] = [];
 
-  ngOnInit() {
-    console.log(this.annualData);
-  }
+
 
   // constructor(private investmentService: InvestmentService) {}
 

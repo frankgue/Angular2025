@@ -1,9 +1,15 @@
+@if (!annualData || annualData.length === 0) {
+<p class="center">
+  No investment data available. Please enter your investment details and press
+  "Calculate".
+</p>
+} @else {
 <table>
   <thead>
     <tr>
       <th>Year</th>
       <th>Interest</th>
-      <th>Value at End of Year</th>
+      <th>Interest at End of Year</th>
       <th>Annual Investment</th>
       <th>Total Interest</th>
       <th>Total Amount Invested</th>
@@ -13,12 +19,13 @@
     @for (dataInvestment of annualData; track $index) {
     <tr>
       <td>{{ dataInvestment.year }}</td>
-      <td>{{ dataInvestment.interest }}</td>
-      <td>{{ dataInvestment.valueEndOfYear }}</td>
-      <td>{{ dataInvestment.annualInvestment }}</td>
-      <td>{{ dataInvestment.totalInterest }}</td>
-      <td>{{ dataInvestment.totalAmountInvested }}</td>
+      <td>{{ dataInvestment.interest | currency }}</td>
+      <td>{{ dataInvestment.valueEndOfYear | currency }}</td>
+      <td>{{ dataInvestment.annualInvestment | currency }}</td>
+      <td>{{ dataInvestment.totalInterest | currency }}</td>
+      <td>{{ dataInvestment.totalAmountInvested | currency }}</td>
     </tr>
     }
   </tbody>
 </table>
+}
