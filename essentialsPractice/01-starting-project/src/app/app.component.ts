@@ -14,45 +14,18 @@ import type { UserInvestmentInput } from './user-investment-input.model';
 })
 export class AppComponent {
   @Input({ required: true }) userData!: UserInvestmentInput;
-  annualDataCalculated= signal<AnnualData[]>([]);
 
-  calculateInvestment(userData: UserInvestmentInput) {
-    let investmentValue = userData.initialInvestment;
-    const annualDataCalculated: AnnualData[] = [];
+  @Input() annualDataCalculated: AnnualData[] = [];
 
-    for (let i = 0; i < userData.duration; i++) {
-      const year = i + 1;
-      const interestEarnedInYear =
-        investmentValue * (userData.expectedReturn / 100);
-      investmentValue += interestEarnedInYear + userData.annualInvestment;
-      const totalInterest =
-        investmentValue -
-        userData.annualInvestment * year -
-        userData.initialInvestment;
-      annualDataCalculated.push({
-        year: year,
-        interest: interestEarnedInYear,
-        valueEndOfYear: investmentValue,
-        annualInvestment: userData.annualInvestment,
-        totalInterest: totalInterest,
-        totalAmountInvested:
-          userData.initialInvestment + userData.annualInvestment * year,
-      });
-    }
-    this.annualDataCalculated.set(annualDataCalculated);
+  onUserInvestmentAvailable(annualData: AnnualData[]) {
+    this.annualDataCalculated = annualData;
   }
 
-  // @Input() annualDataCalculated: AnnualData[] = [];
+  annualData: AnnualData[] = [];
 
-  // onUserInvestmentAvailable(annualData: AnnualData[]) {
-  //   this.annualDataCalculated = annualData;
-  // }
+  constructor(private investmentService: InvestmentService) {}
 
-  // annualData: AnnualData[] = [];
-
-  // constructor(private investmentService: InvestmentService) {}
-
-  // ngOnInit() {
-  //   this.annualData = this.investmentService.getAnnualData();
-  // }
+  ngOnInit() {
+    this.annualData = this.investmentService.getAnnualData();
+  }
 }

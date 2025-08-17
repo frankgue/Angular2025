@@ -8,18 +8,14 @@ import { CurrencyPipe, DecimalPipe } from '@angular/common';
   standalone: true,
   imports: [CurrencyPipe, DecimalPipe],
   templateUrl: './investment-results.component.html',
-  styleUrl: './investment-results.component.css'
+  styleUrl: './investment-results.component.css',
 })
 export class InvestmentResultsComponent {
-
   @Input() annualData: AnnualData[] = [];
 
+  constructor(private investmentService: InvestmentService) {}
 
-
-  // constructor(private investmentService: InvestmentService) {}
-
-  // ngOnInit() {
-  //   this.annualData = this.investmentService.getAnnualData();
-  // }
-  
+  ngOnInit() {
+    this.annualData = this.investmentService.getAnnualData();
+  }
 }
