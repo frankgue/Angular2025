@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { InvestmentService } from '../investment.service';
 import { CurrencyPipe } from '@angular/common';
 
@@ -18,6 +18,6 @@ export class InvestmentResultsComponent {
   }
 
   ngOnInit() {
-    this.investmentService.getAnnualData();
+    computed(() => this.annualDataResults);
   }
 }
