@@ -5,7 +5,10 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './server-status.component.html',
-  styleUrl: './server-status.component.css'
+  styleUrl: './server-status.component.css',
+  host: {
+    id: "status"
+  }
 })
 export class ServerStatusComponent {
 
