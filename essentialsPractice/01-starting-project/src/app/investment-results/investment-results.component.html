@@ -1,4 +1,4 @@
-@if (!annualData || annualData.length === 0) {
+@if (!annualDataResults ||  annualDataResults.length === 0) {
 <p class="center">
   No investment data available. Please enter your investment details and press
   "Calculate".
@@ -16,7 +16,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (dataInvestment of annualData; track $index) {
+    @for (dataInvestment of annualDataResults; track $index) {
     <tr>
       <td>{{ dataInvestment.year }}</td>
       <td>{{ dataInvestment.interest | currency }}</td>

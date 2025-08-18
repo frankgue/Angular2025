@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InvestmentService } from '../investment.service';
-import { AnnualData } from '../annual-data.model';
+import type { AnnualData } from '../annual-data.model';
 import type { UserInvestmentInput } from '../user-investment-input.model';
 
 @Component({
@@ -17,8 +17,6 @@ export class UserInputComponent {
   enteredExpectedReturn = signal(5);
   enteredDuration = signal(10);
 
-  @Input() annualData: AnnualData[] = [];
-
   constructor(private investmentService: InvestmentService) {}
 
   onSubmit() {
@@ -28,8 +26,7 @@ export class UserInputComponent {
       expectedReturn: this.enteredExpectedReturn(),
       duration: this.enteredDuration(),
     };
-    this.annualData =
-      this.investmentService.calculateInvestment(userInvestment);
+    this.investmentService.calculateInvestment(userInvestment);
     this.resetForm();
   }
 
@@ -38,6 +35,5 @@ export class UserInputComponent {
     this.enteredAnnualInvestment.set(0);
     this.enteredExpectedReturn.set(0);
     this.enteredDuration.set(0);
-    this.annualData = [];
   }
 }
