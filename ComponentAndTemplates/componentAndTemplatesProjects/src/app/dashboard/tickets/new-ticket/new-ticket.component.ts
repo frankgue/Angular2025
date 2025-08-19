@@ -17,6 +17,9 @@ export class NewTicketComponent {
   // @Output() private add = new EventEmitter<{ title: string; request: string }>();
   add = output<{ title: string; request: string }>();
 
+  enteredTitle = '';
+  enteredRequest = '';
+
   ngOnInit(): void {
     console.log("ON INIT");
 
@@ -29,8 +32,8 @@ export class NewTicketComponent {
 
   }
 
-  onSubmit(title: string, request: string): void {
-    this.add.emit({ title, request });
+  onSubmit(): void {
+    this.add.emit({title: this.enteredTitle, request: this.enteredRequest });
     this.form?.nativeElement.reset();
   }
 }
