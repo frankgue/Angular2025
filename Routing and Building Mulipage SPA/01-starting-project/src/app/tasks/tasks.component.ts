@@ -1,8 +1,23 @@
-import { Component, computed, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+  signal,
+} from '@angular/core';
 
 import { TaskComponent } from './task/task.component';
 import { TasksService } from './tasks.service';
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  RouterLink,
+  RouterStateSnapshot,
+} from '@angular/router';
+import { Task } from './task/task.model';
 
 @Component({
   selector: 'app-tasks',
@@ -11,34 +26,31 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
   styleUrl: './tasks.component.css',
   imports: [TaskComponent, RouterLink],
 })
-export class TasksComponent implements OnInit {
+export class TasksComponent {
   // order = input.required<'asc' | 'desc'>();
- 
-  order = signal<'asc' | 'desc'>('desc');
-  private activateRoute = inject(ActivatedRoute);
-  private destroyRef = inject(DestroyRef)  
-  private tasksService = inject(TasksService);
-  userId = input.required<string>();
-  userTasks = computed(() => this.tasksService.allTasks().filter(task => task.userId === this.userId()).sort(
-    (a, b) => {
-      if (this.order() === 'asc') {
-        return a.id > b.id ? -1 : 1;
-      } else{
-        return a.id > b.id ? 1 : -1;
-      }
-    }
-  ));
 
-  
-  ngOnInit(): void {
-    const subscription = this.activateRoute.queryParams.subscribe({
-      next: (params) => {
-        this.order.set(params['order'] ?? 'asc');
-      }
-    });
-    this.destroyRef.onDestroy(() => {
-      subscription.unsubscribe();
-    });
+  order = input<'asc' | 'desc' | undefined>();
+  userId = input.required<string>();
+  userTasks = input.required<Task[]>();
+}
+
+export const resolveUserTasks: ResolveFn<Task[]> = (
+  activatedRoute: ActivatedRouteSnapshot,
+  routerState: RouterStateSnapshot
+) => {
+  const tasksService = inject(TasksService);
+  const userId = activatedRoute.paramMap.get('userId');
+  const order = activatedRoute.queryParams['order'];
+  const tasks = tasksService
+    .allTasks()
+    .filter((task) => task.userId === userId);
+
+  if (order && order === 'asc') {
+     tasks.sort((a, b) => (a.id > b.id ? -1 : 1));
+  } else {
+     tasks.sort((a, b) => (a.id > b.id ? 1 : -1));
   }
 
-}
+  return tasks.length ? tasks : [];
+
+};

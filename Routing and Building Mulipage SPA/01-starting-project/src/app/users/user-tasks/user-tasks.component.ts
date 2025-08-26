@@ -1,6 +1,6 @@
-import { Component, computed, DestroyRef, inject, Input, input, OnInit } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { UsersService } from '../users.service';
-import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
+import { ActivatedRouteSnapshot, ResolveFn, RouterLink, RouterOutlet, RouterStateSnapshot } from '@angular/router';
 
 @Component({
   selector: 'app-user-tasks',
@@ -9,39 +9,21 @@ import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
   styleUrl: './user-tasks.component.css',
   imports: [RouterOutlet, RouterLink],
 })
-export class UserTasksComponent implements OnInit {
- 
-  // @Input({required: true}) userId!: string;
-  // private usersService = inject(UsersService);
+export class UserTasksComponent {
 
-  // get userName() {
-  //   return this.usersService.users.find(user => user.id === this.userId)?.name ?? 'Unknown User';
-  // }
-
-  // set userIdValue(userId: string) {
-  //   this.userId = userId;
-  // }
-
-  // userId = input.required<string>();
-  private usersService = inject(UsersService);
-  private activatedRoute = inject(ActivatedRoute);
-  userName = '';
-  private destroyRef = inject(DestroyRef);
+  userName = input.required<string>();
   message = input.required<string>();
 
-   ngOnInit(): void {
-    console.log(this.message());
+}
 
-    console.log(this.activatedRoute);
-    const subscription = this.activatedRoute.paramMap.subscribe({
-      next: paramMap => {
-        const userID = paramMap.get('userId')!;
-        this.userName = this.usersService.users.find(user => user.id === userID)?.name ?? 'Unknown User';
-      }
-    })
-    this.destroyRef.onDestroy(() => {
-      subscription.unsubscribe();
-    });
-  }
 
+export const resolveUsername: ResolveFn<string> =  (activateRoute: ActivatedRouteSnapshot, routerState: RouterStateSnapshot) => {
+  const usersService = inject(UsersService);
+  const userName  = usersService.users.find(user => user.id === activateRoute.paramMap.get('userId'))?.name ?? 'Unknown User';
+
+  return userName;
+} 
+
+export const resolveTitle: ResolveFn<string> = (activateRouteSnapshot, routerState) => {
+  return resolveUsername(activateRouteSnapshot, routerState) + "'s Tasks";
 }
